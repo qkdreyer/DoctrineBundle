@@ -331,7 +331,7 @@ class DoctrineExtension extends AbstractDoctrineExtension
         $entityManagers = [];
         foreach ($config['entity_managers'] as $name => $manager) {
             $entityManagers[$name] = sprintf('doctrine.orm.%s_entity_manager', $name);
-            $container->setParameter($this->entityManagers[$name] . '.clear_on_shutdown', $manager['clear_on_shutdown']);
+            $container->setParameter($entityManagers[$name] . '.clear_on_shutdown', $manager['clear_on_shutdown']);
         }
         $container->setParameter('doctrine.entity_managers', $entityManagers);
 
