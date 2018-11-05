@@ -90,6 +90,8 @@ Configuration Reference
                         profiling:            "%kernel.debug%"
                         server_version:       ~
                         driver_class:         ~
+                        # Allows to specify a custom wrapper implementation to use.                       
+                        # Must be a subclass of Doctrine\DBAL\Connection
                         wrapper_class:        ~
                         shard_choser:         ~
                         shard_choser_service: ~
@@ -723,7 +725,7 @@ There are lots of other configuration options that you can use to overwrite
 certain classes, but those are for very advanced use-cases only.
 
 Oracle DB
-=======
+~~~~~~~~~
 
 If the environment format configured in oracle does not meet doctrine requirements,
 you need to use the OracleSessionInit listener so that doctrine is aware of the format used by Oracle DB.
