@@ -91,6 +91,24 @@ class DoctrineBundle extends Bundle
         $this->autoloader = Autoloader::register($dir, $namespace, $proxyGenerator);
     }
 
+    private function clearManagerIfRequired($id)
+    {
+        if ($this->container->getParameter($id . '.clear_on_shutdown') === true) {
+            if (!method_exists($this->container, 'initialized') || $this->container->initialized($id)) {
+                $this->container->get($id)->clear();
+            }
+        }
+    }
+
+    private function closeConnectionIfRequired($id)
+    {
+        if ($this->container->getParameter($id . '.close_on_shutdown') === true){
+            if (!method_exists($this->container, 'initialized') || $this->container->initialized($id)) {
+                $this->container->get($id)->close();
+            }
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -104,11 +122,7 @@ class DoctrineBundle extends Bundle
         // Clear all entity managers to clear references to entities for GC
         if ($this->container->hasParameter('doctrine.entity_managers')) {
             foreach ($this->container->getParameter('doctrine.entity_managers') as $id) {
-                if (method_exists($this->container, 'initialized') && ! $this->container->initialized($id)) {
-                    continue;
-                }
-
-                $this->container->get($id)->clear();
+                $this->clearManagerIfRequired($id);
             }
         }
 
@@ -118,11 +132,7 @@ class DoctrineBundle extends Bundle
         }
 
         foreach ($this->container->getParameter('doctrine.connections') as $id) {
-            if (method_exists($this->container, 'initialized') && ! $this->container->initialized($id)) {
-                continue;
-            }
-
-            $this->container->get($id)->close();
+            $this->closeConnectionIfRequired($id);
         }
     }
 
